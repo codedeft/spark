@@ -23,6 +23,7 @@ import org.apache.spark.SparkConf
 import org.apache.spark.scheduler.{InputFormatInfo, SplitInfo}
 import org.apache.spark.util.IntParam
 import org.apache.spark.util.MemoryParam
+import scala.IllegalArgumentException
 
 
 // TODO: Add code and support for ensuring that yarn resource 'tasks' are location aware !
@@ -127,11 +128,11 @@ class ClientArguments(val args: Array[String], val sparkConf: SparkConf) {
 
         case Nil =>
           if (userClass == null) {
-            printUsageAndExit(1)
+            throw new IllegalArgumentException(getUsageMessage())
           }
 
         case _ =>
-          printUsageAndExit(1, args)
+          throw new IllegalArgumentException(getUsageMessage(args))
       }
     }
 
@@ -140,11 +141,10 @@ class ClientArguments(val args: Array[String], val sparkConf: SparkConf) {
   }
 
 
-  def printUsageAndExit(exitCode: Int, unknownParam: Any = null) {
-    if (unknownParam != null) {
-      System.err.println("Unknown/unsupported param " + unknownParam)
-    }
-    System.err.println(
+  def getUsageMessage(unknownParam: Any = null):String = {
+    val message = if (unknownParam != null) "Unknown/unsupported param " + unknownParam+ "\n" else ""
+
+    message +
       "Usage: org.apache.spark.deploy.yarn.Client [options] \n" +
       "Options:\n" +
       "  --jar JAR_PATH             Path to your application's JAR file (required in yarn-cluster mode)\n" +
@@ -160,8 +160,5 @@ class ClientArguments(val args: Array[String], val sparkConf: SparkConf) {
       "  --addJars jars             Comma separated list of local jars that want SparkContext.addJar to work with.\n" +
       "  --files files              Comma separated list of files to be distributed with the job.\n" +
       "  --archives archives        Comma separated list of archives to be distributed with the job."
-      )
-    System.exit(exitCode)
   }
-
 }
