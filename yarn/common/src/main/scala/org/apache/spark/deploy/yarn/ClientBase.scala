@@ -23,6 +23,7 @@ import java.nio.ByteBuffer
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable.{HashMap, ListBuffer, Map}
+import scala.IllegalArgumentException
 
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs._
@@ -38,7 +39,6 @@ import org.apache.hadoop.yarn.api.records._
 import org.apache.hadoop.yarn.conf.YarnConfiguration
 import org.apache.hadoop.yarn.util.{Apps, Records}
 import org.apache.spark.{SparkException, Logging, SparkConf, SparkContext}
-import scala.IllegalArgumentException
 
 /**
  * The entry point (starting in Client#main() and Client#run()) for launching Spark on YARN. The
@@ -94,7 +94,8 @@ trait ClientBase extends Logging {
 
     // If we have requested more then the clusters max for a single resource then exit.
     if (args.executorMemory > maxMem) {
-      val errorMessage = "Required executor memory (%d MB), is above the max threshold (%d MB) of this cluster.".
+      val errorMessage =
+        "Required executor memory (%d MB), is above the max threshold (%d MB) of this cluster.".
         format(args.executorMemory, maxMem)
       logError(errorMessage)
       throw new IllegalArgumentException(errorMessage)
@@ -192,7 +193,6 @@ trait ClientBase extends Logging {
         val errorMessage = "Can't get Master Kerberos principal for use as renewer"
         logError(errorMessage)
         throw new SparkException(errorMessage)
-
       }
     }
     val dst = new Path(fs.getHomeDirectory(), appStagingDir)

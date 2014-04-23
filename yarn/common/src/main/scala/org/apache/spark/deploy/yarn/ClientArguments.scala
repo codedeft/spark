@@ -18,12 +18,12 @@
 package org.apache.spark.deploy.yarn
 
 import scala.collection.mutable.{ArrayBuffer, HashMap}
+import scala.IllegalArgumentException
 
 import org.apache.spark.SparkConf
 import org.apache.spark.scheduler.{InputFormatInfo, SplitInfo}
 import org.apache.spark.util.IntParam
 import org.apache.spark.util.MemoryParam
-import scala.IllegalArgumentException
 
 
 // TODO: Add code and support for ensuring that yarn resource 'tasks' are location aware !
@@ -141,7 +141,7 @@ class ClientArguments(val args: Array[String], val sparkConf: SparkConf) {
   }
 
 
-  def getUsageMessage(unknownParam: Any = null):String = {
+  def getUsageMessage(unknownParam: Any = null): String = {
     val message = if (unknownParam != null) "Unknown/unsupported param " + unknownParam+ "\n" else ""
 
     message +
