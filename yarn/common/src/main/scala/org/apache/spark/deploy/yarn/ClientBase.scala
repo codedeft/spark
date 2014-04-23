@@ -79,7 +79,6 @@ trait ClientBase extends Logging {
       if (cond) {
         logError(errStr)
         throw new IllegalArgumentException(args.getUsageMessage())
-
       }
     }
   }
